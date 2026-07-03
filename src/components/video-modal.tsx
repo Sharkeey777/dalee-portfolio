@@ -18,7 +18,15 @@ export function VideoModal({ project, activeIndex, onClose, onSelect }: VideoMod
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
+    const previousPosition = document.body.style.position;
+    const previousTop = document.body.style.top;
+    const previousWidth = document.body.style.width;
+    const scrollY = window.scrollY;
+
     document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -30,13 +38,17 @@ export function VideoModal({ project, activeIndex, onClose, onSelect }: VideoMod
 
     return () => {
       document.body.style.overflow = previousOverflow;
+      document.body.style.position = previousPosition;
+      document.body.style.top = previousTop;
+      document.body.style.width = previousWidth;
+      window.scrollTo(0, scrollY);
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [onClose]);
 
   return (
-    <div className="video-modal-backdrop" role="dialog" aria-modal="true" aria-label={`Просмотр кейса ${project.name}`}>
-      <div className="video-modal-shell">
+    <div className="video-modal-backdrop" role="dialog" aria-modal="true" aria-label={`Просмотр кейса ${project.name}`} onClick={onClose}>
+      <div className="video-modal-shell" onClick={(event) => event.stopPropagation()}>
         <button type="button" onClick={onClose} className="video-modal-close" aria-label="Закрыть">
           <X size={20} weight="bold" />
         </button>

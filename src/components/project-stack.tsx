@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import type { CSSProperties, ReactNode } from "react";
+import { cloneElement, useEffect, useRef, useState } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import { CaretLeft, CaretRight, Play } from "@phosphor-icons/react";
+import { motion, useReducedMotion } from "motion/react";
 import { VideoModal } from "@/components/video-modal";
 import type { Project, ProjectVideo } from "@/content/site";
 import { assetPath } from "@/lib/asset-path";
@@ -17,6 +18,10 @@ type ActiveVideoState = {
   videoIndex: number;
 };
 
+function previewPath(file: string) {
+  return file.replace(/\.mp4$/, "-preview.mp4");
+}
+
 function PreviewVideo({ video }: { video: ProjectVideo }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -28,7 +33,7 @@ function PreviewVideo({ video }: { video: ProjectVideo }) {
       ([entry]) => {
         if (entry.isIntersecting) {
           if (!element.src) {
-            element.src = assetPath(video.file);
+            element.src = assetPath(previewPath(video.file));
             element.load();
           }
           void element.play().catch(() => undefined);
@@ -36,7 +41,7 @@ function PreviewVideo({ video }: { video: ProjectVideo }) {
           element.pause();
         }
       },
-      { rootMargin: "200px", threshold: 0.05 },
+      { rootMargin: "80px", threshold: 0.08 },
     );
 
     observer.observe(element);
@@ -46,23 +51,31 @@ function PreviewVideo({ video }: { video: ProjectVideo }) {
   return <video ref={videoRef} muted loop playsInline preload="none" poster={assetPath(video.poster)} />;
 }
 
+type VideoCardProps = {
+  video: ProjectVideo;
+  onOpen: () => void;
+  forceLandscape?: boolean;
+  badge?: string;
+  preview?: boolean;
+};
+
 function VideoCard({
   video,
   onOpen,
   forceLandscape = false,
   badge,
-}: {
-  video: ProjectVideo;
-  onOpen: () => void;
-  forceLandscape?: boolean;
-  badge?: string;
-}) {
+  preview = true,
+}: VideoCardProps) {
   const isLandscape = forceLandscape || video.orientation === "landscape";
 
   return (
     <button type="button" className={`reel-card ${isLandscape ? "is-landscape" : "is-portrait"}`} onClick={onOpen}>
       <div className="reel-card-media">
-        <PreviewVideo video={video} />
+        {preview ? (
+          <PreviewVideo video={video} />
+        ) : (
+          <Image src={assetPath(video.poster)} alt="" fill sizes="(max-width: 767px) 82vw, 23rem" loading="lazy" unoptimized />
+        )}
         <div className="reel-card-overlay" />
         {badge ? <span className="reel-card-badge">{badge}</span> : null}
       </div>
@@ -94,7 +107,7 @@ function ScrollRail({
 }: {
   railId: string;
   direction: "left" | "right";
-  items: ReactNode[];
+  items: ReactElement<VideoCardProps>[];
 }) {
   const railStyle = { "--rail-duration": `${Math.max(42, items.length * 7)}s` } as CSSProperties;
 
@@ -123,7 +136,7 @@ function ScrollRail({
         <div className={`project-rail-track is-auto ${direction === "right" ? "is-reversed" : ""}`} style={railStyle}>
           <div className="project-rail-segment">{items}</div>
           <div className="project-rail-segment" aria-hidden="true">
-            {items}
+            {items.map((item) => cloneElement(item, { preview: false }))}
           </div>
         </div>
       </div>
@@ -133,6 +146,7 @@ function ScrollRail({
 
 export function ProjectStack({ projects }: ProjectStackProps) {
   const [activeVideo, setActiveVideo] = useState<ActiveVideoState | null>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   const activeProject = activeVideo ? projects.find((project) => project.slug === activeVideo.projectSlug) ?? null : null;
 
@@ -150,7 +164,14 @@ export function ProjectStack({ projects }: ProjectStackProps) {
           );
 
           return (
-            <section key={project.slug} className="project-rail-block">
+            <motion.section
+              key={project.slug}
+              className="project-rail-block"
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.08 }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            >
               <ProjectHeader name={project.name} logo={project.logo} />
 
               {flipVideo ? (
@@ -205,7 +226,7 @@ export function ProjectStack({ projects }: ProjectStackProps) {
                   ))}
                 />
               ) : null}
-            </section>
+            </motion.section>
           );
         })}
       </div>
