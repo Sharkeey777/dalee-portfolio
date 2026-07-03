@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { CaretLeft, CaretRight, Play } from "@phosphor-icons/react";
 import { VideoModal } from "@/components/video-modal";
 import type { Project, ProjectVideo } from "@/content/site";
@@ -15,6 +16,35 @@ type ActiveVideoState = {
   projectSlug: string;
   videoIndex: number;
 };
+
+function PreviewVideo({ video }: { video: ProjectVideo }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const element = videoRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!element.src) {
+            element.src = assetPath(video.file);
+            element.load();
+          }
+          void element.play().catch(() => undefined);
+        } else {
+          element.pause();
+        }
+      },
+      { rootMargin: "200px", threshold: 0.05 },
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [video.file]);
+
+  return <video ref={videoRef} muted loop playsInline preload="none" poster={assetPath(video.poster)} />;
+}
 
 function VideoCard({
   video,
@@ -32,9 +62,7 @@ function VideoCard({
   return (
     <button type="button" className={`reel-card ${isLandscape ? "is-landscape" : "is-portrait"}`} onClick={onOpen}>
       <div className="reel-card-media">
-        <video autoPlay muted loop playsInline preload="metadata" poster={assetPath(video.poster)}>
-          <source src={assetPath(video.file)} type="video/mp4" />
-        </video>
+        <PreviewVideo video={video} />
         <div className="reel-card-overlay" />
         {badge ? <span className="reel-card-badge">{badge}</span> : null}
       </div>
@@ -66,8 +94,10 @@ function ScrollRail({
 }: {
   railId: string;
   direction: "left" | "right";
-  items: React.ReactNode[];
+  items: ReactNode[];
 }) {
+  const railStyle = { "--rail-duration": `${Math.max(42, items.length * 7)}s` } as CSSProperties;
+
   return (
     <div className="project-rail-manual">
       <div className="project-rail-controls">
@@ -90,7 +120,7 @@ function ScrollRail({
       </div>
 
       <div id={railId} className="project-rail-window is-manual" style={{ scrollBehavior: "smooth" }}>
-        <div className={`project-rail-track is-auto ${direction === "right" ? "is-reversed" : ""}`}>
+        <div className={`project-rail-track is-auto ${direction === "right" ? "is-reversed" : ""}`} style={railStyle}>
           <div className="project-rail-segment">{items}</div>
           <div className="project-rail-segment" aria-hidden="true">
             {items}

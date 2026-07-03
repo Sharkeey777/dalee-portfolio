@@ -27,7 +27,7 @@
 }
 
 .top-nav .brand-lockup-image {
-  width: clamp(12rem, 18vw, 16rem);
+  width: clamp(9.5rem, 12vw, 12rem);
 }
 
 .hero-cinema {
@@ -59,9 +59,9 @@
   position: relative;
   z-index: 10;
   min-height: 100vh;
-  max-width: 1500px;
+  max-width: 1260px;
   margin: 0 auto;
-  padding: 1.25rem 1rem 2.5rem;
+  padding: 1rem 1rem 2.5rem;
   display: flex;
   flex-direction: column;
 }
@@ -71,7 +71,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.65rem 1rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 999px;
 }
 
@@ -240,7 +240,7 @@
 
 .project-rail-track.is-auto {
   gap: 1.25rem;
-  animation: rail-loop-left 42s linear infinite;
+  animation: rail-loop-left var(--rail-duration, 42s) linear infinite;
 }
 
 .project-rail-track.is-reversed {
