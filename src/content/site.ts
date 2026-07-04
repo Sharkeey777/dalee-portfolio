@@ -47,7 +47,7 @@ export const navItems: NavItem[] = [
 export const heroContent: HeroContent = {
   title: "Портфолио студии далее",
   heroVideo: "/assets/video/hero-main.mp4",
-  heroPoster: "/assets/projects/studio-dalee/poster.jpg",
+  heroPoster: "/assets/video/hero-main-poster.jpg",
 };
 
 export const projects: Project[] = [
