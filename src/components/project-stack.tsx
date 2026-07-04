@@ -8,6 +8,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { VideoModal } from "@/components/video-modal";
 import type { Project, ProjectVideo } from "@/content/site";
 import { assetPath } from "@/lib/asset-path";
+import { posterPath, previewPath } from "@/lib/media-path";
 
 type ProjectStackProps = {
   projects: Project[];
@@ -17,10 +18,6 @@ type ActiveVideoState = {
   projectSlug: string;
   videoIndex: number;
 };
-
-function previewPath(file: string) {
-  return file.replace(/\.mp4$/, "-preview.mp4");
-}
 
 function PreviewVideo({ video }: { video: ProjectVideo }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -48,7 +45,7 @@ function PreviewVideo({ video }: { video: ProjectVideo }) {
     return () => observer.disconnect();
   }, [video.file]);
 
-  return <video ref={videoRef} muted loop playsInline preload="none" poster={assetPath(video.poster)} />;
+  return <video ref={videoRef} muted loop playsInline preload="none" poster={assetPath(posterPath(video.file))} />;
 }
 
 type VideoCardProps = {
@@ -74,7 +71,14 @@ function VideoCard({
         {preview ? (
           <PreviewVideo video={video} />
         ) : (
-          <Image src={assetPath(video.poster)} alt="" fill sizes="(max-width: 767px) 82vw, 23rem" loading="lazy" unoptimized />
+          <Image
+            src={assetPath(posterPath(video.file))}
+            alt=""
+            fill
+            sizes="(max-width: 767px) 78vw, 23rem"
+            loading="lazy"
+            unoptimized
+          />
         )}
         <div className="reel-card-overlay" />
         {badge ? <span className="reel-card-badge">{badge}</span> : null}

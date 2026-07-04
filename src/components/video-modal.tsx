@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { ArrowClockwise, ArrowCounterClockwise, X } from "@phosphor-icons/react";
 import type { Project } from "@/content/site";
 import { assetPath } from "@/lib/asset-path";
+import { posterPath } from "@/lib/media-path";
 
 type VideoModalProps = {
   project: Project;
@@ -61,7 +62,7 @@ export function VideoModal({ project, activeIndex, onClose, onSelect }: VideoMod
               autoPlay
               playsInline
               preload="metadata"
-              poster={assetPath(video.poster)}
+              poster={assetPath(posterPath(video.file))}
               controlsList="nodownload noplaybackrate"
               disablePictureInPicture
               onContextMenu={(event) => event.preventDefault()}

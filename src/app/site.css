@@ -676,7 +676,7 @@
 
 @media (max-width: 767px) {
   .section-shell {
-    padding: 3rem 0.75rem;
+    padding: 2.5rem 0.75rem;
   }
 
   .hero-cinema {
@@ -712,12 +712,13 @@
   }
 
   .project-rail-shell {
-    gap: 3.25rem;
+    gap: 2.75rem;
   }
 
   .project-rail-block {
-    gap: 1.1rem;
-    contain-intrinsic-size: auto 620px;
+    gap: 0.9rem;
+    content-visibility: visible;
+    contain-intrinsic-size: none;
   }
 
   .project-heading-row {
@@ -731,16 +732,16 @@
   }
 
   .project-title {
-    font-size: clamp(2rem, 11vw, 3.1rem);
+    font-size: clamp(1.9rem, 9vw, 2.7rem);
     line-height: 0.95;
   }
 
   .reel-card.is-portrait {
-    width: 82vw;
+    width: min(78vw, 20rem);
   }
 
   .reel-card.is-landscape {
-    width: 90vw;
+    width: min(88vw, 34rem);
   }
 
   .reel-card {
@@ -752,8 +753,31 @@
     padding-right: 0.25rem;
   }
 
+  .project-rail-manual {
+    gap: 0.65rem;
+  }
+
+  .rail-control-button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
   .project-rail-window {
-    padding-inline: 0.75rem;
+    padding-inline: 0.5rem;
+  }
+
+  .project-rail-track.is-auto,
+  .project-rail-segment {
+    gap: 0.8rem;
+  }
+
+  .project-landscape-grid,
+  .project-landscape-grid.is-domian {
+    gap: 0.8rem;
+  }
+
+  .logo-marquee-section .project-title {
+    max-width: 10ch;
   }
 
   .logo-marquee-item-plain {
