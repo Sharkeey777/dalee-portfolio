@@ -225,7 +225,7 @@
   position: relative;
   overflow: hidden;
   margin-inline: calc(50% - 50vw);
-  padding-inline: max(1rem, calc((100vw - 1500px) / 2 + 2rem));
+  padding-inline: 0;
 }
 
 .project-rail-window.is-manual {
@@ -664,7 +664,7 @@
   }
 
   .project-rail-window {
-    padding-inline: 1rem;
+    padding-inline: 0;
   }
 
   .project-landscape-grid,
@@ -763,7 +763,7 @@
   }
 
   .project-rail-window {
-    padding-inline: 0.5rem;
+    padding-inline: 0;
   }
 
   .project-rail-track.is-auto,
