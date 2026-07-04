@@ -3,12 +3,14 @@ import { LogoMarquee } from "@/components/logo-marquee";
 import { ProjectStack } from "@/components/project-stack";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { SiteFooter } from "@/components/site-footer";
+import { SiteLoader } from "@/components/site-loader";
 import { clientLogos, heroContent, navItems, projects } from "@/content/site";
 import { siteConfig } from "@/lib/site-config";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
+      <SiteLoader />
       <ScrollProgress />
 
       <HeroSection navItems={navItems} hero={heroContent} />
